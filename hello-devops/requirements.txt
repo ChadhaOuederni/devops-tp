@@ -1,4 +1,2 @@
-# requirements.txt
-# Exemple de dépendance (décommenter si besoin)
-# flask==2.1.
-#hh
+flask == 2.0.1
+pytest == 7.0.1
