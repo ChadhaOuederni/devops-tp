@@ -1,5 +1,5 @@
 import unittest
-from app import app
+from server import app
 class TestApp ( unittest.TestCase ):
  def test_home_route ( self ):
   tester = app.test_client ( self )
