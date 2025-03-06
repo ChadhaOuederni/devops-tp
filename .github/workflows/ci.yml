@@ -1,25 +1,26 @@
 name: CI/CD Pipeline
 
-on: [push, pull_request]  # Exécute les tests à chaque push et PR
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
   test:
     runs-on: ubuntu-latest
-
+    strategy:
+      matrix:
+        python-version: ["3.8", "3.9"]  # This should be a valid sequence list
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3  # Télécharge le code du repo
-
-      - name: Set up Python
+      - uses: actions/checkout@v3
+      - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
-        with:
-          python-version: [3.8, 3.9]   # Utilise Python 3.10 au lieu de 3.13
-
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip
-          pip install flask  # Installation directe de Flask
-          pip install -r requirements.txt  # Si tu as un fichier de dépendances
-
+          pip install -r requirements.txt
       - name: Run tests
-        run: python -m unittest discover
+        run: |
+          pytest
