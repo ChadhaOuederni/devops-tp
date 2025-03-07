@@ -1,26 +1,31 @@
-name: CI/CD Pipeline
+# .gitlab-ci.yml
+image: python:3.9
+stages:
+  - lint
+  - test
+  - deploy
 
-on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
+cache:
+  paths:
+    - .cache/pip
 
-jobs:
-  test:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: ["3.8", "3.9"]  # This should be a valid sequence list
-    steps:
-      - uses: actions/checkout@v3
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v4
-      - name: Install dependencies
-        run: |
-          pip install -r requirements.txt
-      - name: Run tests
-        run: |
-          pytest
+lint-job:
+  stage: lint
+  script:
+    - pip install flake8
+    - flake8 hello-devops/
+
+test-job:
+  stage: test
+  script:
+    - pip install -r hello-devops/requirements.txt
+    - python -m pytest hello-devops/
+  artifacts:
+    paths:
+      - test-results.txt
+
+deploy-job:
+  stage: deploy
+  script:
+    - echo "Deploying to staging..."
+  when: manual
